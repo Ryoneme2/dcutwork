@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  User              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model ProductType {
+  id            Int             @id @default(autoincrement())
+  typeName      String
+  create_at     DateTime        @default(now())
+  ProductOnType ProductOnType[]
+}
+
+model Session {
+  id           String   @id
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  Account       Account[]
+  Product       Product[]
+  Session       Session[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// * --- bussiness section --- *
+
+model Category {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  ProductOnCategory ProductOnCategory[]
+}
+
+model Product {
+  id                String              @id
+  pName             String
+  pPrice            Int
+  pDescription      String
+  date_create       DateTime            @default(now())
+  userCreateId      String
+  User              User                @relation(fields: [userCreateId], references: [id])
+  ProductOnCategory ProductOnCategory[]
+  ProductOnColor    ProductOnColor[]
+  ProductOnType     ProductOnType[]
+}
+
+model ProductColor {
+  id             Int              @id @default(autoincrement())
+  colorName      String
+  create_at      DateTime         @default(now())
+  ProductOnColor ProductOnColor[]
+}
+
+model ProductOnCategory {
+  productId  String
+  categoryId Int
+  Category   Category @relation(fields: [categoryId], references: [id])
+  Product    Product  @relation(fields: [productId], references: [id])
+
+  @@id([productId, categoryId])
+}
+
+model ProductOnColor {
+  productId    String
+  colorId      Int
+  ProductColor ProductColor @relation(fields: [colorId], references: [id])
+  Product      Product      @relation(fields: [productId], references: [id])
+
+  @@id([productId, colorId])
+}
+
+model ProductOnType {
+  productId   String
+  typeId      Int
+  Product     Product     @relation(fields: [productId], references: [id])
+  ProductType ProductType @relation(fields: [typeId], references: [id])
+
+  @@id([productId, typeId])
+}
