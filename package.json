@@ -6,7 +6,10 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "func:build": "cd amplify/backend/function/dcutworkfn/ts && npm install && npm run tsc && cd -",
+    "func:update": "cd amplify/backend/function/dcutworkfn/src && npm install && cd -",
+    "func:updatedb": "cd amplify/backend/function/dcutworkfn/src && npx prisma db pull && npx prisma generate && cd -"
   },
   "dependencies": {
     "next": "13.0.2",
@@ -23,6 +26,7 @@
     "autoprefixer": "^10.4.7",
     "eslint": "^8.26.0",
     "eslint-config-next": "13.0.2",
+    "eslint-plugin-prettier": "^4.2.1",
     "postcss": "^8.4.14",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
