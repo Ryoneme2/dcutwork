@@ -1,0 +1,9 @@
+{
+  "function": {
+    "dcutworkfn": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  }
+}
